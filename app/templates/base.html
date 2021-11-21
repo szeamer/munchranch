@@ -6,42 +6,99 @@ user - the name of the current user-->
 <html>
     <head>
         <title>{{title}} - Siberian Cats</title>
+        <link rel="stylesheet" href="./static/style.css">
     </head>
     <body>
         <header>
-            <a href="/"><h1>Munchranch Siberian Cats</h1></a>
-            <menu>
-                <p>Meet Our Cats</p>
-                <ul>
-                    <li><a href="/available-kittens">Available Kittens</a></li>
-                    <li><a href="/expecting-litters">Expecting Litters</a></li>
-                    <li><a href="/our-breeders">Our Breeders</a></li>
-                    <li><a href="/sold-kittens">Sold Kittens</a></li>
-                </ul>
-                <p>Adoption Information</p>
-                <ul>
-                    <li><a href="/bringing-kitten-home">Bringing Your Kitten Home</a></li>
-                    <li><a href="/breeder-info">Breeder Information</a></li>
-                    <li><a href="/conditions-for-sale">Conditions for Sale</a></li>
-                    <li><a href="/health-contract">Health Contract</a></li>
-                    <li><a href="/pricing-discounts">Pricing Discounts</a></li>
-                </ul>
-                <p>Caring for Siberians</p>
-                <ul>
-                    <li><a href="/general-care">General Care</a></li>
-                    <li><a href="/diet">Diet</a></li>
-                    <li><a href="/second-cats">Introducing a Second Cat</a></li>
-                    <li><a href="/resources">Resources</a></li>
-                </ul>
-                <a href="/responsible-breeding"><p>Responsible Breeding</p></a>
-                <a href="/testimonials"><p>Testimonials</p></a>
-                <a href="/application"><p>Application</p></a>
-                <a href="/contact"><p>Contact</p></a>
-                <a href="/about"><p>About</p></a>
-            </menu>
+            <nav>
+            <div class="header_element">
+            <a href="/"><p class="header_button">Munchranch Siberian Cats</p></a>
+            </div>
+                <div class="header_element moc_header">
+                    <p class="header_button moc_button">Meet Our Cats</p>
+                    <ul class="dropdown moc_dropdown">
+                        <div>
+                        <li><a href="/available-kittens">Available Kittens</a></li>
+                        <li><a href="/expecting-litters">Expecting Litters</a></li>
+                        <li><a href="/our-breeders">Our Breeders</a></li>
+                        <li><a href="/sold-kittens">Sold Kittens</a></li>
+                        </div>
+                    </ul>
+                </div>
+
+                <div class="header_element ai_header">
+                    <p class="header_button ai_button">Adoption Information</p>
+                    <ul class="dropdown ai_dropdown">
+                        <div>
+                        <li><a href="/bringing-kitten-home">Bringing Your Kitten Home</a></li>
+                        <li><a href="/breeder-info">Breeder Information</a></li>
+                        <li><a href="/conditions-for-sale">Conditions for Sale</a></li>
+                        <li><a href="/health-contract">Health Contract</a></li>
+                        <li><a href="/pricing-discounts">Pricing Discounts</a></li>
+                        </div>
+                    </ul>
+                </div>
+
+                <div class="header_element cys_header">
+                    <p class="header_button cys_button">Caring for Your Siberian</p>
+                    <ul class="dropdown cys_dropdown">
+                        <div>
+                        <li><a href="/general-care">General Care</a></li>
+                        <li><a href="/diet">Diet</a></li>
+                        <li><a href="/second-cats">Introducing a Second Cat</a></li>
+                        <li><a href="/resources">Resources</a></li>
+                        </div>
+                    </ul>
+                </div>
+                <div class="header_element"><a href="/responsible-breeding"><p class="header_button">Responsible Breeding</p></a></div>
+                <div class="header_element"><a href="/testimonials"><p class="header_button">Testimonials</p></a></div>
+                <div  class="header_element"><a href="/application"><p class="header_button">Application</p></a></div>
+                <div  class="header_element"><a href="/contact"><p class="header_button">Contact</p></a></div>
+                <div  class="header_element"><a href="/about"><p class="header_button">About</p></a></div>
+            </nav>
         </header>
-        <hr>
+        <div class="content">
         {% block content %}
         {% endblock %}
+        </div>
+        <script>
+            var moc_button = document.querySelector(".moc_header");
+            var moc_dropdown = document.querySelector(".moc_dropdown");
+
+            var ai_button = document.querySelector(".ai_header");
+            var ai_dropdown = document.querySelector(".ai_dropdown");
+
+            var cys_button = document.querySelector(".cys_header");
+            var cys_dropdown = document.querySelector(".cys_dropdown");
+
+            moc_button.addEventListener("mouseover", createShowHandler(moc_dropdown))
+            moc_button.addEventListener("mouseout", createHideHandler(moc_dropdown))
+
+            ai_button.addEventListener("mouseover", createShowHandler(ai_dropdown))
+            ai_button.addEventListener("mouseout", createHideHandler(ai_dropdown))
+
+            cys_button.addEventListener("mouseover", createShowHandler(cys_dropdown))
+            cys_button.addEventListener("mouseout", createHideHandler(cys_dropdown))
+
+            function createShowHandler(element){
+                return function(){
+                    show_menu(element);
+                }
+            };
+
+            function createHideHandler(element){
+                return function(){
+                    hide_menu(element)
+                }
+            };
+
+            function show_menu(element){
+                element.classList.add("visible")
+            };
+
+            function hide_menu(element){
+                element.classList.remove("visible")
+            };
+        </script>
     </body>
 </html>

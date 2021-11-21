@@ -1,0 +1,71 @@
+:root {
+  --header-button: #8B8BAE;
+  --button-text: #F0F3F5;
+}
+
+body{
+  margin: 0px;
+  background-color: var(--button-text);
+}
+
+a{
+  text-decoration: none;
+  color: var(--button-text)
+}
+
+nav{
+  background-color: var(--header-button);
+  max-height:min-content;
+  display: flex;
+  justify-content: stretch;
+
+}
+
+.header_element{
+  display: inline-block;
+  background-color: var(--header-button);
+  height: fit-content;
+
+  margin: 5px;
+  border-radius: 5px;
+  height: 100%;
+  align-self: stretch;
+}
+
+.header_button{
+  background-color: var(--header-button);
+  color: var(--button-text);
+  text-decoration: none;
+
+  padding:5px;
+  margin: 5px;
+  border-radius: 5px;
+  height:100%;
+}
+
+.dropdown{
+  display: none;
+  list-style-type: none;
+  height: 0;
+  width: 0;
+  padding: 0;
+}
+
+.dropdown div{
+  flex-grow: 1;
+  width: fit-content;
+  position: absolute;
+  padding: 10px;
+  margin-top: 10px;
+
+  background-color: var(--header-button);
+  color: var(--button-text)
+}
+
+.visible{
+  display: inline;
+}
+
+.content{
+  z-index: -2;
+}
