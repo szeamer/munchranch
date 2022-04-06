@@ -6,58 +6,68 @@ user - the name of the current user-->
 <html>
     <head>
         <title>{{title}} - Siberian Cats</title>
-        <link rel="stylesheet" href="./static/style.css">
+        <link rel="stylesheet" href="{{url_for('static',filename='main.css')}}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <!--load tailwind-->
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <!--load flowbite-->
+        <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.1/dist/flowbite.min.css" />
+
+    
+
     </head>
-    <body>
+    <body class="bg-teal-900 h-screen">
         <header>
-            <nav>
-            <div class="header_element">
-            <a href="/"><p class="header_button">Munchranch Siberian Cats</p></a>
-            </div>
-                <div class="header_element moc_header">
-                    <p class="header_button moc_button">Meet Our Cats</p>
-                    <ul class="dropdown moc_dropdown">
+            <nav  class="flex flex-row justify-between fixed top-0 left-0 right-0 bg-white h-32 items-center
+            px-4 text-slate-800 z-50 shadow-md">
+                <a href="/"><p class="flex-1 text-center px-8 text-teal-900 text-xl text-bold">Munchranch Siberian Cats</p></a>
+
+                <!--meet our cats dropdown-->
+                <div class="flex-1 flex flex-col h-full">
+                    <button data-dropdown-toggle="dropdown-1" class="flex-1 inline-block text-center bg-white outline-0">Meet Our Cats</button>
+                    <ul id="dropdown-1" class="flex-1 hidden bg-white shadow-md p-5 rounded">
                         <div>
-                        <li><a href="/available-kittens">Available Kittens</a></li>
-                        <li><a href="/expecting-litters">Expecting Litters</a></li>
-                        <li><a href="/our-breeders">Our Breeders</a></li>
-                        <li><a href="/sold-kittens">Sold Kittens</a></li>
+                        <li class="p-2"><a href="/available-kittens">Available Kittens</a></li>
+                        <li class="p-2"><a href="/expecting-litters">Expecting Litters</a></li>
+                        <li class="p-2"><a href="/our-breeders">Our Breeders</a></li>
+                        <li class="p-2"><a href="/sold-kittens">Sold Kittens</a></li>
                         </div>
                     </ul>
                 </div>
 
-                <div class="header_element ai_header">
-                    <p class="header_button ai_button">Adoption Information</p>
-                    <ul class="dropdown ai_dropdown">
+                <!--adoption dropdown-->
+                <div class="flex-1 flex flex-col h-full">
+                    <button data-dropdown-toggle="dropdown-2" class="flex-1 inline-block text-center bg-white outline-0">Adoption Information</button>
+                    <ul id="dropdown-2" class=" hidden bg-white shadow-md p-5 rounded">
                         <div>
-                        <li><a href="/bringing-kitten-home">Bringing Your Kitten Home</a></li>
-                        <li><a href="/breeder-info">Breeder Information</a></li>
-                        <li><a href="/conditions-for-sale">Conditions for Sale</a></li>
-                        <li><a href="/health-contract">Health Contract</a></li>
-                        <li><a href="/pricing-discounts">Pricing Discounts</a></li>
+                        <li class="p-2"><a href="/bringing-kitten-home">Bringing Your Kitten Home</a></li>
+                        <li class="p-2"><a href="/breeder-info">Breeder Information</a></li>
+                        <li class="p-2"><a href="/conditions-for-sale">Conditions for Sale</a></li>
+                        <li class="p-2"><a href="/health-contract">Health Contract</a></li>
+                        <li class="p-2"><a href="/pricing-discounts">Pricing Discounts</a></li>
                         </div>
                     </ul>
                 </div>
 
-                <div class="header_element cys_header">
-                    <p class="header_button cys_button">Caring for Your Siberian</p>
-                    <ul class="dropdown cys_dropdown">
+                <div class="flex-1 flex flex-col h-full">
+                    <button data-dropdown-toggle="dropdown-3" class="flex-1 inline-block text-center bg-white outline-0">Caring for Your Siberian</button>
+                    <ul id="dropdown-3" class="hidden bg-white shadow-md p-5 rounded">
                         <div>
-                        <li><a href="/general-care">General Care</a></li>
-                        <li><a href="/diet">Diet</a></li>
-                        <li><a href="/second-cats">Introducing a Second Cat</a></li>
-                        <li><a href="/resources">Resources</a></li>
+                        <li class="p-2"><a href="/general-care">General Care</a></li>
+                        <li class="p-2"><a href="/diet">Diet</a></li>
+                        <li class="p-2"><a href="/second-cats">Introducing a Second Cat</a></li>
+                        <li class="p-2"><a href="/resources">Resources</a></li>
                         </div>
                     </ul>
                 </div>
-                <div class="header_element"><a href="/responsible-breeding"><p class="header_button">Responsible Breeding</p></a></div>
-                <div class="header_element"><a href="/testimonials"><p class="header_button">Testimonials</p></a></div>
-                <div  class="header_element"><a href="/application"><p class="header_button">Application</p></a></div>
-                <div  class="header_element"><a href="/contact"><p class="header_button">Contact</p></a></div>
-                <div  class="header_element"><a href="/about"><p class="header_button">About</p></a></div>
+                <div class="flex-2 px-4"><a href="/responsible-breeding"><p class="header_button">Responsible Breeding</p></a></div>
+                <div class="flex-2 px-4"><a href="/testimonials"><p class="header_button">Testimonials</p></a></div>
+                <div  class="flex-2 px-4"><a href="/application"><p class="header_button">Application</p></a></div>
+                <div  class="flex-2 px-4"><a href="/contact"><p class="header_button">Contact</p></a></div>
+                <div  class="flex-2 px-4"><a href="/about"><p class="header_button">About</p></a></div>
             </nav>
         </header>
-        <div class="content">
+        <div class="relative z-10 py-32 px-32 pt-40 mx-32 bg-white h-full">
         {% block content %}
         {% endblock %}
         </div>
@@ -100,5 +110,7 @@ user - the name of the current user-->
                 element.classList.remove("visible")
             };
         </script>
+        <script src="https://unpkg.com/flowbite@1.4.1/dist/flowbite.js"></script>
+
     </body>
 </html>
