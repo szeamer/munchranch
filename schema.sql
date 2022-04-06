@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS cats;
+
+CREATE TABLE cats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    catname TEXT NOT NULL,
+    sex TEXT NOT NULL CHECK (sex='male' OR sex='female'),
+    age INTEGER
+);

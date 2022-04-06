@@ -1,4 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-
+{% for cat in cats %}
+<div class="shadow-md rounded-md">
+<h2>{{ cat[2] }}</h2>
+<p>{{ cat[3] }}</p>
+</div>
+{% endfor %}
 {% endblock %}

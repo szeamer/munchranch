@@ -1,5 +1,6 @@
 from flask import render_template
 from app import app
+import sqlite3
 
 @app.route('/')
 @app.route('/index')
@@ -87,7 +88,12 @@ def expecting_litters():
 
 @app.route('/our-breeders')
 def our_breeders():
-    return render_template('meet-our-cats/our-breeders.html')
+    cats = []
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    for row in cur.execute('SELECT * FROM cats'):
+        cats.append(row)
+    return render_template('meet-our-cats/our-breeders.html', cats = cats)
 
 @app.route('/sold-kittens')
 def sold_kittens():
