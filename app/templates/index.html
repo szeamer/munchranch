@@ -5,8 +5,5 @@ user - the name of the current user-->
 {% extends "base.html" %}
 {% block content %}
         <h1>Welcome to {{title}} Siberian Cats</h1>
-        <h2>Hello, {{user.username}}!</h2>
-        {% for post in posts %}
-        <div><p><b>{{post.author.username}}</b> says {{post.body}}</p></div>
-        {% endfor %}
+        <h2>Hello, {{user.name}}!</h2>
 {% endblock %}

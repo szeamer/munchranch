@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 {% for cat in cats %}
-<div class="shadow-md rounded-md">
-<h2>{{ cat[2] }}</h2>
-<p>{{ cat[3] }}</p>
+<div class="shadow-md rounded-md p-4">
+<h2 class="font-bold p-4">{{ cat[2] }}</h2>
+<p class="p-4">{{ cat[3] }}</p>
 </div>
 {% endfor %}
 {% endblock %}

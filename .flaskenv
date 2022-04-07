@@ -1,3 +1,4 @@
 FLASK_APP=munchkins.py
 FLASK_DEBUG=1
 TEMPLATES_AUTO_RELOAD = True
+PYTHONUNBUFFERED="anything_here"

@@ -7,3 +7,10 @@ CREATE TABLE cats (
     sex TEXT NOT NULL CHECK (sex='male' OR sex='female'),
     age INTEGER
 );
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+    username TEXT PRIMARY KEY NOT NULL,
+    email TEXT,
+    pwhash TEXT NOT NULL
+)
