@@ -131,6 +131,9 @@ def login():
                 return redirect(url_for('login'))
             login_user(user)
             return redirect(url_for('admin'))
+        else:
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
     return render_template('login.html', form=form)
 
 @app.route('/signup')

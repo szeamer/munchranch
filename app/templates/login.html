@@ -4,31 +4,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Munchranch Admin</title>
+
+    <link rel="stylesheet" href="{{url_for('static',filename='main.css')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <!--load tailwind-->
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <!--load flowbite-->
+    <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.1/dist/flowbite.min.css" />
+
 </head>
-<body>
-    <h1>Sign In</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+<body class="bg-teal-900 flex justify-center items-center h-screen">
+    <div id="container" class="m-auto bg-white rounded w-1/2 py-4 flex justify-center">
+    <div>
+        <h1 class="font-bold text-xl m-4">Sign In</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li class="m-4 p-4 bg-red-500 rounded text-white">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p class="m-4">
+                {{ form.username.label }}<br>
+                {{ form.username(size=32) }}
+            </p>
+            <p class="m-4">
+                {{ form.password.label }}<br>
+                {{ form.password(size=32) }}
+            </p>
+            <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ form.submit() }}</button>
+        </form>
+    </div>
+    </div>
 </body>
 </html>
