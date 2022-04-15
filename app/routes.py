@@ -123,27 +123,31 @@ def admin():
             name = catform.name.data
             description = catform.description.data
             sex = catform.sex.data
-            forsale = catform.description.data
+            forsale = catform.forsale.data
             sold = catform.sold.data
             color = catform.color.data
-            breeder = catform.color.data
+            breeder = catform.breeder.data
             birthdate = catform.birthdate.data
             print(birthdate)
 
             image = catform.photo.data
             if image:
                 image_path = os.path.join(app.config['UPLOAD_PATH'], image.filename)
-                image.save(image_path)
+                image.save("app/" + image_path)
             else:
                 image_path = None
 
             print(catform.mother.data, catform.father.data)
-            mother = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.mother.data,)).fetchone()[0]
-            father = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.father.data,)).fetchone()[0]
+            try:
+                mother = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.mother.data,)).fetchone()[0]
+                father = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.father.data,)).fetchone()[0]
+            except(TypeError):
+                mother, father = 0, 0
             print(mother, father)
     
             #insert the cat into the database
-            cur.execute("INSERT INTO cats (catname, sex, color, about, forsale, picture, breeding, sold) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, sex, color, description, forsale, image_path, breeder, sold))
+            print('Breeder: ', breeder)
+            cur.execute("INSERT INTO cats (catname, sex, color, about, forsale, picture, breeding, sold) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", (name, sex, color, description, forsale, image_path, breeder, sold))
             connection.commit()
             id = cur.execute("SELECT id FROM cats WHERE catname = ?", (name,)).fetchone()[0]
 

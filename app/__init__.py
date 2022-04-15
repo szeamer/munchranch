@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_login import LoginManager
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 login = LoginManager(app)
 login.init_app(app)
@@ -11,4 +11,4 @@ app.secret_key = 'dev'
 from app import routes, models
 
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-app.config['UPLOAD_PATH'] = 'uploads'
+app.config['UPLOAD_PATH'] = 'static/uploads'
