@@ -5,7 +5,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from flask import Blueprint, render_template
 from app import login
 from app.models import User
-from app.forms import LoginForm
+from app.forms import LoginForm, AddCatForm
+import os
 
 @app.route('/')
 @app.route('/index')
@@ -85,7 +86,7 @@ def our_breeders():
     cats = []
     con = sqlite3.connect('database.db')
     cur = con.cursor()
-    for row in cur.execute('SELECT * FROM cats'):
+    for row in cur.execute('SELECT * FROM cats WHERE breeding=1'):
         cats.append(row)
     return render_template('meet-our-cats/our-breeders.html', cats = cats)
 
@@ -104,10 +105,57 @@ def load_user(user_id):
     return user
 
 @login_required
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if current_user.is_authenticated:
-        return render_template('admin.html')
+        connection = sqlite3.connect('database.db')
+        cur = connection.cursor()
+        catform = AddCatForm()
+
+        #get names of cats that could be kitten parents
+        mothers = cur.execute("SELECT catname FROM cats WHERE sex='female' AND breeding=1").fetchall()
+        fathers = cur.execute("SELECT catname FROM cats WHERE sex ='male' AND breeding=1").fetchall()
+        catform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
+        catform.father.choices += [(father[0], father[0]) for father in fathers]
+
+        #if add cat form is submitted, add the cat
+        if catform.validate_on_submit():
+            name = catform.name.data
+            description = catform.description.data
+            sex = catform.sex.data
+            forsale = catform.description.data
+            sold = catform.sold.data
+            color = catform.color.data
+            breeder = catform.color.data
+            birthdate = catform.birthdate.data
+            print(birthdate)
+
+            image = catform.photo.data
+            if image:
+                image_path = os.path.join(app.config['UPLOAD_PATH'], image.filename)
+                image.save(image_path)
+            else:
+                image_path = None
+
+            print(catform.mother.data, catform.father.data)
+            mother = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.mother.data,)).fetchone()[0]
+            father = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.father.data,)).fetchone()[0]
+            print(mother, father)
+    
+            #insert the cat into the database
+            cur.execute("INSERT INTO cats (catname, sex, color, about, forsale, picture, breeding, sold) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, sex, color, description, forsale, image_path, breeder, sold))
+            connection.commit()
+            id = cur.execute("SELECT id FROM cats WHERE catname = ?", (name,)).fetchone()[0]
+
+            #if a parent is specified, add a relationship
+            if mother or father:
+                if not cur.execute("SELECT birthdate FROM litters WHERE mother=? AND father=? AND birthdate=?", (mother, father, birthdate)).fetchone():
+                    cur.execute("INSERT INTO litters (mother, father, birthdate) VALUES (?, ?, ?);", (mother, father, birthdate))
+                    connection.commit()
+                cur.execute("INSERT INTO belongs (mother, father, birthdate, kitten) VALUES (?, ?, ?, ?);", (mother, father, birthdate, id))
+                connection.commit()
+        cats = cur.execute("SELECT * FROM cats").fetchall()
+        return render_template('admin.html', catform = catform, cats = cats)
     else:
         return redirect(url_for('login'))
 

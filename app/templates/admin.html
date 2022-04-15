@@ -12,14 +12,67 @@
     <!--load flowbite-->
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.1/dist/flowbite.min.css" />
 </head>
-<body class="bg-teal-900 flex justify-center items-center h-screen">
-    <div id="container" class="m-auto bg-white rounded w-1/2 py-4 flex justify-center">
-    <h1>Admin</h1>
-    {% if current_user.is_authenticated %}
-        Hi {{ current_user.name }}!
-        Your email is {{ current_user.email}}
-    {% endif %}
-    <a href="{{ url_for('logout') }}">Logout</a>
+<body class="bg-teal-900 flex justify-center items-center h-screen p-4">
+    <div id="container" class="relative bg-white rounded h-full w-full">
+    <nav class="flex justify-between w-full p-4">
+        <h1 class="font-bold text-teal-900 p-2">Admin</h1>
+        {% if current_user.is_authenticated %}
+            Hi {{ current_user.name }}!
+            Your email is {{ current_user.email}}
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="bg-teal-900 p-2 m-2 rounded text-white">Logout</a>
+    </nav>
+    <div id="contents" class="p-4">
+        <form action="" method="post" validators=[FileRequired()] enctype="multipart/form-data">
+            <h2>Add a Cat</h2>
+            {{ catform.hidden_tag() }}
+            <p class="m-4">
+                {{ catform.name.label }}<br>
+                {{ catform.name(size=32) }}
+            </p>
+            <p class="m-4">
+                {{ catform.description.label }}<br>
+                {{ catform.description(size=32) }}
+            </p>
+            <p class="m-4">
+                {{ catform.color.label }}<br>
+                {{ catform.color(size=32) }}
+            </p>
+            <p class="m-4">
+                {{ catform.mother.label }}<br>
+                {{ catform.mother }}
+            </p>
+            <p class="m-4">
+                {{ catform.father.label }}<br>
+                {{ catform.father }}
+            </p>
+            <p class="m-4">
+                {{ catform.birthdate.label }}<br>
+                {{ catform.birthdate }}
+            </p>
+            <p class="m-4">
+                {{ catform.sex.label }}<br>
+                {{ catform.sex }}
+            </p>
+            <p class="m-4">
+                {{ catform.forsale.label }}<br>
+                {{ catform.forsale(size=32) }}
+            </p>
+            <p class="m-4">
+                {{ catform.sold.label }}<br>
+                {{ catform.sold(size=32) }}
+            </p>
+            <p class="m-4">
+                {{ catform.breeder.label }}<br>
+                {{ catform.breeder(size=32) }}
+            </p>
+            <p class="m-4">
+                {{ catform.photo.label }}<br>
+                {{ catform.photo(size=32) }}
+            </p>
+            <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ catform.submit() }}</button>
+        </form>
+    </div>
     </div>
 </body>
 </html>

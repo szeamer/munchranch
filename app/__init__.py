@@ -9,3 +9,6 @@ login.login_view = 'login'
 app.secret_key = 'dev'
 
 from app import routes, models
+
+app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
+app.config['UPLOAD_PATH'] = 'uploads'

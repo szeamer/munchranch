@@ -10,14 +10,6 @@ with open('schema.sql') as f:
 
 cur = connection.cursor()
 
-cur.execute("INSERT INTO cats (catname, sex) VALUES (?, ?)",
-            ('Fluffone', 'female')
-            )
-
-cur.execute("INSERT INTO cats (catname, sex) VALUES (?, ?)",
-            ('Beaker', 'female')
-            )
-
 #set up user object
 silvia = models.User('silvia', 'silvia@gmail.com')
 silvia.set_password('password')
