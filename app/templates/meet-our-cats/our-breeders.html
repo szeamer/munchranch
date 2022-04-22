@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 {% for cat in cats %}
-<div class="shadow-md rounded-md p-4">
-<h2 class="font-bold p-4">{{ cat[2] }}</h2>
-{% if cat[7] %}
-<img src= {{ cat[7] }}>
-{% endif %}
-<p class="p-4">{{ cat[3], cat[4], cat[5], cat[6], cat[7], cat[8], cat[9], cat[10] }}</p>
-</div>
+    <div class="shadow-md rounded-md p-4">
+        <h2 class="font-bold p-4">{{ cat.name }}</h2>
+        {% if cat.picture %}
+            <img src= {{ cat.picture }}>
+        {% endif %}
+        <p class="p-4">{{ cat }}</p>
+    </div>
 {% endfor %}
 {% endblock %}

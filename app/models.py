@@ -49,3 +49,20 @@ class User:
         if equal is NotImplemented:
             return NotImplemented
         return not equal
+
+
+class Cat:
+    def __init__(self, name, birthdate, color, sex, description, picture, forsale, breeding, sold):
+        self.name = name
+        self.birthdate = birthdate
+        self.color = color
+        self.sex = sex
+        self.description = description
+        self.picture = picture
+        self.forsale = forsale
+        self.breeding = breeding
+        self.birthdate = birthdate
+        self.sold = sold
+    
+    def __repr__(self):
+        return self.name + " " + self.description

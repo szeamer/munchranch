@@ -22,4 +22,25 @@ class AddCatForm(FlaskForm):
     sold = BooleanField('Sold?')
     photo = FileField('Image')
     breeder = BooleanField('Is this a breeding cat?')
-    submit = SubmitField('Add')
+    submit = SubmitField('Create Cat')
+
+class UpdateCatForm(FlaskForm):
+    name = StringField('Name')
+    color = StringField('Color')
+    birthdate = DateField('Date of birth')
+    mother = SelectField('Mother', choices=[('None', None)])
+    father = SelectField('Father', choices=[('None', None)])
+    description = TextAreaField('Description')
+    sex = RadioField('Sex', choices=[('male', 'male'), ('female', 'female')])
+    forsale = BooleanField('For sale?')
+    sold = BooleanField('Sold?')
+    photo = FileField('Image')
+    breeder = BooleanField('Is this a breeding cat?')
+    submit = SubmitField('Update Cat')
+
+class AddLitterForm(FlaskForm):
+    mother = StringField('Mother')
+    father = StringField('Father')
+    duedate = StringField('Due date')
+    born = BooleanField('Are they born yet?')
+    public = BooleanField('Publish now?')

@@ -1,11 +1,12 @@
+
 from flask import render_template, flash, redirect, url_for, request 
-from app import app
+from app import app, query
 import sqlite3
 from flask_login import login_user, logout_user, current_user, login_required
 from flask import Blueprint, render_template
 from app import login
-from app.models import User
-from app.forms import LoginForm, AddCatForm
+from app.models import User, Cat
+from app.forms import LoginForm, AddCatForm, UpdateCatForm
 import os
 
 @app.route('/')
@@ -83,11 +84,7 @@ def expecting_litters():
 
 @app.route('/our-breeders')
 def our_breeders():
-    cats = []
-    con = sqlite3.connect('database.db')
-    cur = con.cursor()
-    for row in cur.execute('SELECT * FROM cats WHERE breeding=1'):
-        cats.append(row)
+    cats = query.get_breeding_cats()
     return render_template('meet-our-cats/our-breeders.html', cats = cats)
 
 @app.route('/sold-kittens')
@@ -104,62 +101,85 @@ def load_user(user_id):
     user = User(user_data[0], user_data[1])
     return user
 
+@app.route('/catqueries', methods=['GET', 'POST'])
+def handle():
+    connection = sqlite3.connect('database.db')
+    cur = connection.cursor()
+    form_data = request.form
+    print("DATA" + str(form_data))
+
+    #find out what kind of form submitted to us by looking at the submit button
+    submission_type = form_data.get('submit')
+    print(submission_type)
+
+    #get all the data in the form
+    name = form_data.get('name', None)
+    description = form_data.get('description', None)
+    sex = form_data.get('sex', None)
+    forsale = form_data.get('forsale', None)
+    sold = form_data.get('sold', None)
+    color = form_data.get('color', None)
+    breeder = form_data.get('breeder', None)
+    birthdate = form_data.get('birthdate', None)
+
+    #set up image path
+    image = form_data.get('photo.data', None)
+    if image:
+        image_path = os.path.join(app.config['UPLOAD_PATH'], image.filename)
+        image.save("app/" + image_path)
+    else:
+        image_path = None
+
+    cat = Cat(name, birthdate, color, sex, description, image, forsale, breeder, sold)
+
+    #depending on the submission type, do something 
+    if submission_type == 'Create Cat':
+        query.create_cat(cat)
+    elif submission_type == 'Update Cat':
+        query.update_cat(cat)
+    elif submission_type == 'Create Litter':
+        pass
+    elif submission_type == 'Update Litter':
+        pass
+
+    return redirect(url_for('admin'))
+
 @login_required
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+    #if we are logged in, show the admin dashboard
     if current_user.is_authenticated:
+        #define forms
+        createcatform = AddCatForm()
+        updatecatform = UpdateCatForm()
+
+        #get the button that made the request for this page, if any
+        form_data = request.form
+        print("THE FORM TAHT MADE ADMIN"+ str(form_data))
+        catform = None
+        if request.form.get('addcat'):
+            catform = "createcat"
+        if request.form.get('updatecat'):
+            catname = request.form.get('updatecat')
+            cat = query.get_cat_by_name(catname)
+            updatecatform = UpdateCatForm(obj=cat)
+            catform = "updatecat"
+        
+
         connection = sqlite3.connect('database.db')
         cur = connection.cursor()
-        catform = AddCatForm()
-
-        #get names of cats that could be kitten parents
+        #get names of cats that could be kitten parents - this is for the right side which does not change
         mothers = cur.execute("SELECT catname FROM cats WHERE sex='female' AND breeding=1").fetchall()
         fathers = cur.execute("SELECT catname FROM cats WHERE sex ='male' AND breeding=1").fetchall()
-        catform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
-        catform.father.choices += [(father[0], father[0]) for father in fathers]
+        createcatform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
+        createcatform.father.choices += [(father[0], father[0]) for father in fathers]
+        updatecatform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
+        updatecatform.father.choices += [(father[0], father[0]) for father in fathers]
 
-        #if add cat form is submitted, add the cat
-        if catform.validate_on_submit():
-            name = catform.name.data
-            description = catform.description.data
-            sex = catform.sex.data
-            forsale = catform.forsale.data
-            sold = catform.sold.data
-            color = catform.color.data
-            breeder = catform.breeder.data
-            birthdate = catform.birthdate.data
-            print(birthdate)
-
-            image = catform.photo.data
-            if image:
-                image_path = os.path.join(app.config['UPLOAD_PATH'], image.filename)
-                image.save("app/" + image_path)
-            else:
-                image_path = None
-
-            print(catform.mother.data, catform.father.data)
-            try:
-                mother = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.mother.data,)).fetchone()[0]
-                father = cur.execute("SELECT id FROM cats WHERE catname = ?", (catform.father.data,)).fetchone()[0]
-            except(TypeError):
-                mother, father = 0, 0
-            print(mother, father)
-    
-            #insert the cat into the database
-            print('Breeder: ', breeder)
-            cur.execute("INSERT INTO cats (catname, sex, color, about, forsale, picture, breeding, sold) VALUES (?, ?, ?, ?, ?, ?, ?, ?);", (name, sex, color, description, forsale, image_path, breeder, sold))
-            connection.commit()
-            id = cur.execute("SELECT id FROM cats WHERE catname = ?", (name,)).fetchone()[0]
-
-            #if a parent is specified, add a relationship
-            if mother or father:
-                if not cur.execute("SELECT birthdate FROM litters WHERE mother=? AND father=? AND birthdate=?", (mother, father, birthdate)).fetchone():
-                    cur.execute("INSERT INTO litters (mother, father, birthdate) VALUES (?, ?, ?);", (mother, father, birthdate))
-                    connection.commit()
-                cur.execute("INSERT INTO belongs (mother, father, birthdate, kitten) VALUES (?, ?, ?, ?);", (mother, father, birthdate, id))
-                connection.commit()
-        cats = cur.execute("SELECT * FROM cats").fetchall()
-        return render_template('admin.html', catform = catform, cats = cats)
+        #get current data 
+        litters = query.get_litters()
+        cats = query.get_cats()
+        return render_template('admin.html', createcatform = createcatform, updatecatform=updatecatform, cats = cats, litters=litters, catform=catform)
     else:
         return redirect(url_for('login'))
 

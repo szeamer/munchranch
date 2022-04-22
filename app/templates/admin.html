@@ -12,67 +12,159 @@
     <!--load flowbite-->
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.4.1/dist/flowbite.min.css" />
 </head>
-<body class="bg-teal-900 flex justify-center items-center h-screen p-4">
-    <div id="container" class="relative bg-white rounded h-full w-full">
+<body class="bg-teal-900 flex justify-center items-center h-min-screen h-min p-8 overflow-scroll">
+    <div id="container" class="relative bg-white rounded h-min w-full">
     <nav class="flex justify-between w-full p-4">
-        <h1 class="font-bold text-teal-900 p-2">Admin</h1>
+        <h1 class="font-bold  text-2xl text-teal-900 p-2">Admin</h1>
+        <form action="" method="post">
+            <button class="p-2 m-2 rounded bg-teal-900 text-white" name="addcat" value="True">Add a Cat</button>
+        </form>
         {% if current_user.is_authenticated %}
             Hi {{ current_user.name }}!
             Your email is {{ current_user.email}}
         {% endif %}
         <a href="{{ url_for('logout') }}" class="bg-teal-900 p-2 m-2 rounded text-white">Logout</a>
     </nav>
-    <div id="contents" class="p-4">
-        <form action="" method="post" validators=[FileRequired()] enctype="multipart/form-data">
-            <h2>Add a Cat</h2>
-            {{ catform.hidden_tag() }}
-            <p class="m-4">
-                {{ catform.name.label }}<br>
-                {{ catform.name(size=32) }}
-            </p>
-            <p class="m-4">
-                {{ catform.description.label }}<br>
-                {{ catform.description(size=32) }}
-            </p>
-            <p class="m-4">
-                {{ catform.color.label }}<br>
-                {{ catform.color(size=32) }}
-            </p>
-            <p class="m-4">
-                {{ catform.mother.label }}<br>
-                {{ catform.mother }}
-            </p>
-            <p class="m-4">
-                {{ catform.father.label }}<br>
-                {{ catform.father }}
-            </p>
-            <p class="m-4">
-                {{ catform.birthdate.label }}<br>
-                {{ catform.birthdate }}
-            </p>
-            <p class="m-4">
-                {{ catform.sex.label }}<br>
-                {{ catform.sex }}
-            </p>
-            <p class="m-4">
-                {{ catform.forsale.label }}<br>
-                {{ catform.forsale(size=32) }}
-            </p>
-            <p class="m-4">
-                {{ catform.sold.label }}<br>
-                {{ catform.sold(size=32) }}
-            </p>
-            <p class="m-4">
-                {{ catform.breeder.label }}<br>
-                {{ catform.breeder(size=32) }}
-            </p>
-            <p class="m-4">
-                {{ catform.photo.label }}<br>
-                {{ catform.photo(size=32) }}
-            </p>
-            <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ catform.submit() }}</button>
-        </form>
-    </div>
+    <div id="contents" class="p-4 flex-row flex">
+        <div id="action" class="h-full">
+            {% if catform == "createcat" %}
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                <h2 class="font-bold text-xl m-4">Add a Cat</h2>
+                {{ createcatform.hidden_tag() }}
+                <p class="m-4">
+                    {{ createcatform.name.label }}<br>
+                    {{ createcatform.name(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ createcatform.description.label }}<br>
+                    {{ createcatform.description(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ createcatform.color.label }}<br>
+                    {{ createcatform.color(size=32) }}
+                </p>
+                <div id="demographics" class="flex flex-row">
+                <p class="m-4">
+                    {{ createcatform.birthdate.label }}<br>
+                    {{ createcatform.birthdate }}
+                </p>
+                <p class="m-4">
+                    {{ createcatform.sex.label }}<br>
+                    {{ createcatform.sex }}
+                </p>
+                </div>
+                <div id="checks" class="flex flex-row">
+                <p class="m-4">
+                    {{ createcatform.forsale.label }}<br>
+                    {{ createcatform.forsale(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ createcatform.sold.label }}<br>
+                    {{ createcatform.sold(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ createcatform.breeder.label }}<br>
+                    {{ createcatform.breeder(size=32) }}
+                </p>
+                </div>
+                <p class="m-4">
+                    {{ createcatform.photo.label }}<br>
+                    {{ createcatform.photo(size=32) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ createcatform.submit() }}</button>
+            </form>
+            {% endif %}
+            
+            {% if catform == "updatecat" %}
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                <h2 class="font-bold text-xl m-4">Add a Cat</h2>
+                {{ updatecatform.hidden_tag() }}
+                <p class="m-4">
+                    {{ updatecatform.name.label }}<br>
+                    {{ updatecatform.name(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ updatecatform.description.label }}<br>
+                    {{ updatecatform.description(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ updatecatform.color.label }}<br>
+                    {{ updatecatform.color(size=32) }}
+                </p>
+                <div id="demographics" class="flex flex-row">
+                <p class="m-4">
+                    {{ updatecatform.birthdate.label }}<br>
+                    {{ updatecatform.birthdate }}
+                </p>
+                <p class="m-4">
+                    {{ updatecatform.sex.label }}<br>
+                    {{ updatecatform.sex }}
+                </p>
+                </div>
+                <div id="checks" class="flex flex-row">
+                <p class="m-4">
+                    {{ updatecatform.forsale.label }}<br>
+                    {{ updatecatform.forsale(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ updatecatform.sold.label }}<br>
+                    {{ updatecatform.sold(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ updatecatform.breeder.label }}<br>
+                    {{ updatecatform.breeder(size=32) }}
+                </p>
+                </div>
+                <p class="m-4">
+                    {{ updatecatform.photo.label }}<br>
+                    {{ updatecatform.photo(size=32) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ updatecatform.submit() }}</button>
+            </form>
+            {% endif %}
+
+            {% if state=='deletecat' %}
+            <p>CAT DELETION</p>
+            {% endif %}
+        </div>
+        <div id="data">
+            <div class="h-96 overflow-y-scroll">
+            <h2 class="font-bold text-xl m-4">Cats</h2>
+            {% for cat in cats %}
+            {% if cat.picture %}
+                <img src= {{ cat.picture }} class="h-40 w-40">
+            {% endif %}
+            <p class="font-bold">{{cat.name}}</p>
+            <p><b>Sex:</b> {{cat.sex}} <b>Color:</b> {{cat.color}}</p>
+            {% if cat.forsale %}
+                <p>For Sale</p>
+            {% endif %}
+            {% if cat.breeding %}
+                <p>Breeding</p>
+            {% endif %}
+            <p>{{cat.description}}</p>
+            <div>
+                <form action="" method="POST">
+                    <button class="bg-green-500 p-1 rounded" name="updatecat" value={{cat.name}}>Update</button>
+                </form>
+                <button class="bg-red-500 p-1 rounded" name="deletecat" value={{cat.name}}>Delete</button>
+            </div>
+            {% endfor %}
+            </div>
+
+            <div class="h-96 overflow-y-scroll">
+            <h2 class="font-bold text-xl m-4">Litters</h2>
+            {% for litter in litters %}
+            <p>{{litter}}</p>
+            <div>
+                <form action="" method="POST">
+                <button class="bg-green-500 p-1 rounded" name="updatelitter" value={{litter}}>Update</button>
+                </form>
+                <button class="bg-red-500 p-1 rounded" name="deletelitter" value={{litter}}>Delete</button>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
     </div>
 </body>
 </html>
