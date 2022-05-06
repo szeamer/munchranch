@@ -1,4 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-
+{% for litter in litters %}
+<p>{{litter}}</p>
+{% endfor %}
 {% endblock %}

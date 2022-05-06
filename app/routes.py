@@ -6,8 +6,10 @@ from flask_login import login_user, logout_user, current_user, login_required
 from flask import Blueprint, render_template
 from app import login
 from app.models import User, Cat
-from app.forms import LoginForm, AddCatForm, UpdateCatForm
+from app.forms import AddKittenForm, DeleteLitterForm, LoginForm, AddCatForm, UpdateCatForm, UpdateLitterForm, AddLitterForm, DeleteCatForm, DeleteLitterForm, AddKittenForm, RemoveKittenForm
 import os
+import datetime
+import json
 
 @app.route('/')
 @app.route('/index')
@@ -76,11 +78,13 @@ def second_cats():
 
 @app.route('/available-kittens')
 def available_kittens():
-    return render_template('meet-our-cats/available-kittens.html')
+    available_kittens = query.get_available_kittens()
+    return render_template('meet-our-cats/available-kittens.html', available_kittens=available_kittens)
 
 @app.route('/expecting-litters')
 def expecting_litters():
-    return render_template('meet-our-cats/expecting-litters.html')
+    litters = query.get_expecting_litters()
+    return render_template('meet-our-cats/expecting-litters.html', litters=litters)
 
 @app.route('/our-breeders')
 def our_breeders():
@@ -89,7 +93,8 @@ def our_breeders():
 
 @app.route('/sold-kittens')
 def sold_kittens():
-    return render_template('meet-our-cats/sold-kittens.html')
+    sold_cats = query.get_sold_cats()
+    return render_template('meet-our-cats/sold-kittens.html', cats = sold_cats)
 
 @login.user_loader
 def load_user(user_id):
@@ -106,42 +111,105 @@ def handle():
     connection = sqlite3.connect('database.db')
     cur = connection.cursor()
     form_data = request.form
-    print("DATA" + str(form_data))
+    print("DATA TO HANDLE" + str(form_data))
 
     #find out what kind of form submitted to us by looking at the submit button
     submission_type = form_data.get('submit')
+    print('SUBMISSION TYPE')
     print(submission_type)
 
-    #get all the data in the form
-    name = form_data.get('name', None)
-    description = form_data.get('description', None)
-    sex = form_data.get('sex', None)
-    forsale = form_data.get('forsale', None)
-    sold = form_data.get('sold', None)
-    color = form_data.get('color', None)
-    breeder = form_data.get('breeder', None)
-    birthdate = form_data.get('birthdate', None)
-
-    #set up image path
-    image = form_data.get('photo.data', None)
-    if image:
-        image_path = os.path.join(app.config['UPLOAD_PATH'], image.filename)
-        image.save("app/" + image_path)
-    else:
-        image_path = None
-
-    cat = Cat(name, birthdate, color, sex, description, image, forsale, breeder, sold)
-
     #depending on the submission type, do something 
+    #CREATE A NEW CAT
     if submission_type == 'Create Cat':
-        query.create_cat(cat)
-    elif submission_type == 'Update Cat':
-        query.update_cat(cat)
-    elif submission_type == 'Create Litter':
-        pass
-    elif submission_type == 'Update Litter':
-        pass
+        #get all the data in the form
+        name = form_data.get('name', None)
+        description = form_data.get('description', None)
+        sex = form_data.get('sex', None)
+        forsale = form_data.get('forsale', None)
+        sold = form_data.get('sold', None)
+        color = form_data.get('color', None)
+        breeder = form_data.get('breeder', None)
+        birthdate = form_data.get('birthdate', None)
 
+        #set up image path
+        image = form_data.get('photo.data', None)
+        if image:
+            image_path = os.path.join(app.config['UPLOAD_PATH'], image.filename)
+            image.save("app/" + image_path)
+        else:
+            image_path = None
+
+        cat = Cat(name, birthdate, color, sex, description, image, forsale, breeder, sold)
+        query.create_cat(cat)
+    #UPDATE AN EXISTING CAT
+    elif submission_type == 'Update Cat':
+        #get all the data in the form
+        name = form_data.get('name', None)
+        description = form_data.get('description', None)
+        sex = form_data.get('sex', None)
+        forsale = form_data.get('forsale', 0)
+        sold = form_data.get('sold', 0)
+        color = form_data.get('color', None)
+        breeder = form_data.get('breeder', 0)
+        birthdate = form_data.get('birthdate', None)
+
+        #set up image path
+        image = form_data.get('photo.data', None)
+        if image:
+            image_path = os.path.join(app.config['UPLOAD_PATH'], image.filename)
+            image.save("app/" + image_path)
+        else:
+            image_path = None
+
+        cat = Cat(name, birthdate, color, sex, description, image, forsale, breeder, sold)
+        query.update_cat(cat)
+    #DELETE A CAT
+    elif submission_type == 'Delete Cat?':
+        print('DELETE CAT')
+        name = form_data.get('name', None)
+        query.delete_cat(name)
+    #CREATE A NEW LITTER
+    elif submission_type == 'Create Litter':
+        print("CREATE LITTER")
+        father = form_data.get('father', None)
+        mother = form_data.get('mother', None)
+        duedate = form_data.get('duedate', None)
+        birthdate = form_data.get('birthdate', None)
+        query.create_litter(mother, father, birthdate, duedate)
+    #UPDATE AN EXISTING LITTER
+    elif submission_type == 'Update Litter':
+        print("UPDATE LITTER")
+        father = form_data.get('father', None)
+        mother = form_data.get('mother', None)
+        duedate = form_data.get('duedate', None)
+        birthdate = form_data.get('birthdate', None)
+        born = form_data.get('born')
+        public = form_data.get('public')
+        query.update_litter(mother, father, birthdate, duedate,born, public)
+    #DELETE A LITTER
+    elif submission_type == 'Delete litter?':
+        print("DELETE LITTER")
+        father = form_data.get('father', None)
+        mother = form_data.get('mother', None)
+        duedate = form_data.get('duedate', None)
+        query.delete_litter(mother, father, duedate)
+    #ADD A KITTEN TO A LITTER
+    elif submission_type == 'Add kitten':
+        litter_data = form_data.get('litter').split("|")
+        print(litter_data)
+        mother = litter_data[0]
+        father = litter_data[1]
+        duedate = litter_data[2]
+        kitten = form_data.get('kitten')
+        query.add_kitten_to_litter(mother, father, kitten, duedate)
+    #REMOVE KITTEN FROM LITTER
+    elif submission_type == 'Remove kitten':
+        litter_data = form_data.get('litter').split("|")
+        mother = litter_data[0]
+        father = litter_data[1]
+        kitten = form_data.get('kitten')
+        print(mother, father, kitten)
+        query.remove_kitten_from_litter(mother, father, kitten)
     return redirect(url_for('admin'))
 
 @login_required
@@ -152,34 +220,106 @@ def admin():
         #define forms
         createcatform = AddCatForm()
         updatecatform = UpdateCatForm()
+        deletecatform = DeleteCatForm()
+
+        createlitterform = AddLitterForm()
+        updatelitterform = UpdateLitterForm()
+        deletelitterform = DeleteLitterForm()
+
+        addkittenform = AddKittenForm()
+        removekittenform = RemoveKittenForm()
 
         #get the button that made the request for this page, if any
         form_data = request.form
         print("THE FORM TAHT MADE ADMIN"+ str(form_data))
-        catform = None
+        form = None
         if request.form.get('addcat'):
-            catform = "createcat"
+            form = "createcat"
         if request.form.get('updatecat'):
             catname = request.form.get('updatecat')
             cat = query.get_cat_by_name(catname)
             updatecatform = UpdateCatForm(obj=cat)
-            catform = "updatecat"
+            print("CAT DETAILS")
+            print(cat.forsale, cat.breeding, cat.sold)
+            if cat.forsale == 1:
+                updatecatform.forsale.data = True
+            if cat.breeding == 1:
+                updatecatform.breeder.data = True
+            if cat.sold == 1:
+                updatecatform.sold.data = True
+            form = "updatecat"
+        if request.form.get('addlitter'):
+            form = "createlitter"
+        if request.form.get('updatelitter'):
+            litter = request.form.get('updatelitter').split("|")
+            print('LITTER' + str(litter))
+            father = litter[0]
+            mother = litter[1]
+            duedate = litter[2]
+            birthdate = litter[3]
+            public = litter[4]
+            born = litter[5]
+            print("BORN AND PUBLIC")
+            print(born, public)
+            litter = query.get_litter(mother, father, duedate, birthdate)
+            updatelitterform = UpdateLitterForm(obj=litter)
+            if public=="1":
+                updatelitterform.public.data = True
+            if born=="1":
+                updatelitterform.born.data = True
+            form='updatelitter'
+        if request.form.get('deletecat'):
+            catname = request.form.get('deletecat')
+            deletecatform = DeleteCatForm(data={'name': catname})
+            form='deletecat'
+        if request.form.get('deletelitter'):
+            litter = request.form.get('deletelitter').split("|")
+            father = litter[0]
+            mother = litter[1]
+            duedate = datetime.datetime.strptime(litter[2], "%Y-%m-%d")
+            deletelitterform = DeleteLitterForm(data={'father': father, 'mother':mother, 'duedate':duedate})
+            form='deletelitter'
+        if request.form.get('addkitten'):
+            form = 'addkitten'
+        if request.form.get('removekitten'):
+            form = 'removekitten'
         
+        #get current  cat and litter data 
+        litters = query.get_litters()
+        print("LITTERS" + str(litters))
+        for litter in litters:
+            print(litter.born, litter.public)
+        cats = query.get_cats()
 
         connection = sqlite3.connect('database.db')
         cur = connection.cursor()
         #get names of cats that could be kitten parents - this is for the right side which does not change
         mothers = cur.execute("SELECT catname FROM cats WHERE sex='female' AND breeding=1").fetchall()
         fathers = cur.execute("SELECT catname FROM cats WHERE sex ='male' AND breeding=1").fetchall()
+        catnames = cur.execute("SELECT catname FROM cats").fetchall()
         createcatform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
         createcatform.father.choices += [(father[0], father[0]) for father in fathers]
+
         updatecatform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
         updatecatform.father.choices += [(father[0], father[0]) for father in fathers]
 
-        #get current data 
-        litters = query.get_litters()
-        cats = query.get_cats()
-        return render_template('admin.html', createcatform = createcatform, updatecatform=updatecatform, cats = cats, litters=litters, catform=catform)
+        createlitterform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
+        createlitterform.father.choices += [(father[0], father[0]) for father in fathers]
+
+        updatelitterform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
+        updatelitterform.father.choices += [(father[0], father[0]) for father in fathers]
+
+        deletelitterform.mother.choices += [(mother[0], mother[0]) for mother in mothers]
+        deletelitterform.father.choices += [(father[0], father[0]) for father in fathers]
+
+        addkittenform.kitten.choices += [(cat[0], cat[0]) for cat in catnames]
+        removekittenform.kitten.choices += [(cat[0], cat[0]) for cat in catnames]
+        litternames =  [(str(litter.mother)+ "|" +str(litter.father)+ "|" +str(litter.birthdate) , str(litter)) for litter in litters]
+        addkittenform.litter.choices += litternames
+        removekittenform.litter.choices += litternames
+
+
+        return render_template('admin.html', createcatform = createcatform, updatecatform=updatecatform, deletecatform=deletecatform, createlitterform=createlitterform, updatelitterform=updatelitterform, deletelitterform=deletelitterform, addkittenform=addkittenform, removekittenform=removekittenform, cats = cats, litters=litters, form=form)
     else:
         return redirect(url_for('login'))
 

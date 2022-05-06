@@ -38,9 +38,40 @@ class UpdateCatForm(FlaskForm):
     breeder = BooleanField('Is this a breeding cat?')
     submit = SubmitField('Update Cat')
 
+class DeleteCatForm(FlaskForm):
+    name = StringField('Name')
+    submit = SubmitField('Delete Cat?')
+
 class AddLitterForm(FlaskForm):
-    mother = StringField('Mother')
-    father = StringField('Father')
-    duedate = StringField('Due date')
+    mother = SelectField('Mother', choices=[('None', None)])
+    father = SelectField('Father', choices=[('None', None)])
+    duedate = DateField('Due date')
+    birthdate = DateField('Birth date')
     born = BooleanField('Are they born yet?')
-    public = BooleanField('Publish now?')
+    public = BooleanField('Public?')
+    submit = SubmitField('Create Litter')
+
+class UpdateLitterForm(FlaskForm):
+    mother = SelectField('Mother', choices=[('None', None)])
+    father = SelectField('Father', choices=[('None', None)])
+    duedate = DateField('Due date')
+    birthdate = DateField('Birth date')
+    born = BooleanField('Are they born yet?')
+    public = BooleanField('Public?')
+    submit = SubmitField('Update Litter')
+
+class DeleteLitterForm(FlaskForm):
+    mother = SelectField('Mother', choices=[('None', None)])
+    father = SelectField('Father', choices=[('None', None)])
+    duedate = DateField('Due date')
+    submit = SubmitField('Delete litter?')
+
+class AddKittenForm(FlaskForm):
+    litter = SelectField('Litter', choices=[('None', None)])
+    kitten = SelectField('Kitten', choices=[('None', None)])
+    submit = SubmitField('Add kitten')
+
+class RemoveKittenForm(FlaskForm):
+    litter = SelectField('Litter', choices=[('None', None)])
+    kitten = SelectField('Kitten', choices=[('None', None)])
+    submit = SubmitField('Remove kitten')

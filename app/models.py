@@ -63,6 +63,22 @@ class Cat:
         self.breeding = breeding
         self.birthdate = birthdate
         self.sold = sold
-    
+
     def __repr__(self):
-        return self.name + " " + self.description
+        return self.name 
+
+class Litter:
+    def __init__(self, mother, father, birthdate, duedate, public, born, kittens):
+        self.mother = mother
+        self.father = father
+        self.birthdate = birthdate
+        self.duedate = duedate
+        self.public = public
+        self.born = born
+        self.kittens = kittens
+
+    def kittens():
+        return self.kittens
+
+    def __repr__(self) -> str:
+        return "{} and {}, {}".format(self.mother, self.father, self.duedate)

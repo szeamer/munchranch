@@ -1,4 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-
+{% for kitten in available_kittens %}
+<div>
+{% if kitten.picture %}
+<img src={kitten.picture}>
+{% endif %}
+<p>{{kitten.name}}</p>
+<p>{{kitten.description}}</p>
+</div>
+{% endfor %}
 {% endblock %}

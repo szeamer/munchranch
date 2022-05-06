@@ -16,8 +16,21 @@
     <div id="container" class="relative bg-white rounded h-min w-full">
     <nav class="flex justify-between w-full p-4">
         <h1 class="font-bold  text-2xl text-teal-900 p-2">Admin</h1>
+
         <form action="" method="post">
             <button class="p-2 m-2 rounded bg-teal-900 text-white" name="addcat" value="True">Add a Cat</button>
+        </form>
+
+        <form action="" method="post">
+            <button class="p-2 m-2 rounded bg-teal-900 text-white" name="addlitter" value="True">Create a Litter</button>
+        </form>
+
+        <form action="" method="post">
+            <button class="p-2 m-2 rounded bg-teal-900 text-white" name="addkitten" value="True">Add Kitten to Litter</button>
+        </form>
+
+        <form action="" method="post">
+            <button class="p-2 m-2 rounded bg-teal-900 text-white" name="removekitten" value="True">Remove Kitten from Litter</button>
         </form>
         {% if current_user.is_authenticated %}
             Hi {{ current_user.name }}!
@@ -27,7 +40,7 @@
     </nav>
     <div id="contents" class="p-4 flex-row flex">
         <div id="action" class="h-full">
-            {% if catform == "createcat" %}
+            {% if form == "createcat" %}
             <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
                 <h2 class="font-bold text-xl m-4">Add a Cat</h2>
                 {{ createcatform.hidden_tag() }}
@@ -75,7 +88,7 @@
             </form>
             {% endif %}
             
-            {% if catform == "updatecat" %}
+            {% if form == "updatecat" %}
             <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
                 <h2 class="font-bold text-xl m-4">Add a Cat</h2>
                 {{ updatecatform.hidden_tag() }}
@@ -123,8 +136,120 @@
             </form>
             {% endif %}
 
-            {% if state=='deletecat' %}
-            <p>CAT DELETION</p>
+            {% if form=='deletecat' %}
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                <p class="m-4">
+                    {{ deletecatform.name.label }}<br>
+                    {{ deletecatform.name(readonly=True) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ deletecatform.submit() }}</button> 
+            </form>
+            {% endif %}
+
+            {% if form=='createlitter' %}
+            <p>Litter CREATION</p>
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                {{ createlitterform.hidden_tag() }}
+                <p class="m-4">
+                    {{ createlitterform.mother.label }}<br>
+                    {{ createlitterform.mother }}
+                </p>
+                <p class="m-4">
+                    {{ createlitterform.father.label }}<br>
+                    {{ createlitterform.father }}
+                </p>
+                <p class="m-4">
+                    {{ createlitterform.duedate.label }}<br>
+                    {{ createlitterform.duedate }}
+                </p>
+                <p class="m-4">
+                    {{ createlitterform.born.label }}<br>
+                    {{ createlitterform.born(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ createlitterform.public.label }}<br>
+                    {{ createlitterform.public(size=32) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ createlitterform.submit() }}</button>
+            </form>
+            {% endif %}
+
+            {% if form=='updatelitter' %}
+            <p>LITTER UPDATE</p>
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                <div >
+                <p class="m-4">
+                    {{ updatelitterform.mother.label }}<br>
+                    {{ updatelitterform.mother(readonly=True) }}
+                </p>
+                <p class="m-4">
+                    {{ updatelitterform.father.label }}<br>
+                    {{ updatelitterform.father(readonly=True) }}
+                </p>
+                <p class="m-4">
+                    {{ updatelitterform.duedate.label }}<br>
+                    {{ updatelitterform.duedate(readonly=True) }}
+                </p>
+                <p class="m-4">
+                    {{ updatelitterform.birthdate.label }}<br>
+                    {{ updatelitterform.birthdate(size=32) }}
+                </p>
+                </div>
+                <p class="m-4">
+                    {{ updatelitterform.born.label }}<br>
+                    {{ updatelitterform.born(size=32) }}
+                </p>
+                <p class="m-4">
+                    {{ updatelitterform.public.label }}<br>
+                    {{ updatelitterform.public(size=32) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ updatelitterform.submit() }}</button>
+            </form>
+            {% endif %}
+
+            {% if form=='deletelitter' %}
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                <p class="m-4">
+                    {{ deletelitterform.mother.label }}<br>
+                    {{ deletelitterform.mother(readonly=True) }}
+                </p>
+                <p class="m-4">
+                    {{ deletelitterform.father.label }}<br>
+                    {{ deletelitterform.father(readonly=True) }}
+                </p>
+                <p class="m-4">
+                    {{ deletelitterform.duedate.label }}<br>
+                    {{ deletelitterform.duedate(readonly=True) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ deletelitterform.submit() }}</button> 
+            </form>
+            {% endif %}
+            {% if form == 'addkitten' %}
+            <p>ADD KITTEN</p>
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                <p class="m-4">
+                    {{ addkittenform.kitten.label }}<br>
+                    {{ addkittenform.kitten(readonly=True) }}
+                </p>
+                <p class="m-4">
+                    {{ addkittenform.litter.label }}<br>
+                    {{ addkittenform.litter(readonly=True) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ addkittenform.submit() }}</button> 
+            </form>
+            {% endif %}
+            {% if form == 'removekitten' %}
+            <form action={{ url_for("handle") }} method="post" validators=[FileRequired()] enctype="multipart/form-data">
+                <p class="m-4">
+                    {{ removekittenform.kitten.label }}<br>
+                    {{ removekittenform.kitten(readonly=True) }}
+                </p>
+                <p class="m-4">
+                    {{ removekittenform.litter.label }}<br>
+                    {{ removekittenform.litter(readonly=True) }}
+                </p>
+                <button class="bg-teal-900 p-4 m-4 rounded text-white">{{ removekittenform.submit() }}</button> 
+            </form>
             {% endif %}
         </div>
         <div id="data">
@@ -147,7 +272,9 @@
                 <form action="" method="POST">
                     <button class="bg-green-500 p-1 rounded" name="updatecat" value={{cat.name}}>Update</button>
                 </form>
+                <form action="" method="POST">
                 <button class="bg-red-500 p-1 rounded" name="deletecat" value={{cat.name}}>Delete</button>
+                </form>
             </div>
             {% endfor %}
             </div>
@@ -156,11 +283,14 @@
             <h2 class="font-bold text-xl m-4">Litters</h2>
             {% for litter in litters %}
             <p>{{litter}}</p>
+            <p>{{ litter.kittens }}</p>
             <div>
                 <form action="" method="POST">
-                <button class="bg-green-500 p-1 rounded" name="updatelitter" value={{litter}}>Update</button>
+                <button class="bg-green-500 p-1 rounded" name="updatelitter" value={{ litter.father.name + "|" + litter.mother.name + "|" + litter.duedate + "|" + litter.birthdate + "|" + litter.public|string + "|" + litter.born|string}}>Update</button>
                 </form>
-                <button class="bg-red-500 p-1 rounded" name="deletelitter" value={{litter}}>Delete</button>
+                <form action="" method="POST">
+                <button class="bg-red-500 p-1 rounded" name="deletelitter" value={{ litter.father.name + "|" + litter.mother.name + "|" + litter.duedate + "|" + litter.birthdate+ "|" + litter.public|string + "|" + litter.born|string}}>Delete</button>
+                </form>
             </div>
             {% endfor %}
             </div>

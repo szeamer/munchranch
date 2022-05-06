@@ -6,7 +6,9 @@
         {% if cat.picture %}
             <img src= {{ cat.picture }}>
         {% endif %}
-        <p class="p-4">{{ cat }}</p>
+        <p class="p-4">{{ cat.name }}</p>
+        <p class="p-4">{{ cat.description }}</p>
+
     </div>
 {% endfor %}
 {% endblock %}
