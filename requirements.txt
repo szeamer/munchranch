@@ -4,7 +4,7 @@ blinker==1.4
 certifi==2019.11.28
 chardet
 click
-colorama==0.4.3
+colorama
 command-not-found==0.3
 configobj==5.0.6
 constantly==15.1.0
